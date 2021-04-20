@@ -11,25 +11,6 @@ from clac_function import *
 from PyQt5.QtWidgets import QProgressBar
 from PyQt5.QtCore import QThread,pyqtSignal
 
-class CalcHologram(QThread):
-    _sum = pyqtSignal(int)  # 信号类型 int
-
-    def __init__(self,fname,iter_num):
-        super(CalcHologram,self).__init__()
-        self.fname = fname
-        self.iter_num = iter_num
-    def run(self):
-        for i in calcHologram_f(self.fname,self.iter_num):
-            self._sum.emit(i)
-
-        
-
-
-
-
-
-
-
 
 
 class UI(QWidget):
@@ -71,11 +52,11 @@ class UI(QWidget):
         self.totalGroup.setLayout(gridlayout)
         # ---------------------------------------
         self.input_group = QGroupBox('设置细节')
-        self.label_show = QLabel('当前迭代进度：')
+        self.label_show = QLabel('计算进度：')
         self.progress_bar = QProgressBar(self)  # 显示当前的迭代进度
         self.progress_bar.setMaximum(self.iter_num-1)
         self.progress_bar.setMinimum(0)
-        self.progress_bar.setToolTip("当前迭代进度")
+        self.progress_bar.setToolTip("计算进度：")
         self.progress_bar.setMaximumWidth(self.label_show.width())
         # self.progress_bar.De
         self.save_btn = QPushButton('保存', self)
@@ -126,15 +107,19 @@ class UI(QWidget):
         # 保存图片的绑定
         # 计算全息图的绑定
         self.clac_xiang_btn.clicked.connect(self.clacHologram)
-
+    # 更新ProgressBar和按钮
     def updateProBar(self,r):
-        # self.clac_xiang_btn.setEnabled(True)
         self.progress_bar.setValue(r)
-        print(r)
         if r == self.iter_num - 1:
-
+            self.load_subject_btn.setEnabled(True)
             self.clac_xiang_btn.setEnabled(True)
             self.clac_xiang_btn.setText('计算全息图')
+            # self.calc_thread.tuple(1)
+            hologram,imgabs = Image.fromarray(self.calc_thread.tuple(0)),\
+                Image.fromarray(self.calc_thread.tuple(1))
+            hologram.show()
+            imgabs.show()
+
 
     def close(self):
         self.calc_thread.quit()
@@ -147,6 +132,7 @@ class UI(QWidget):
             self.progress_bar.setValue(0)
             self.clac_xiang_btn.setText('计算中...')
             self.clac_xiang_btn.setEnabled(False)  # 设置成不可以点击的
+            self.load_subject_btn.setEnabled(False)
             # self.totalGroup.
             # 创建一个线程,这里要加上self，这是一个坑，如果不加上self,出了这个函数，这个线程就会被销毁
             self.calc_thread = CalcHologram(self.currentfname,self.iter_num)
