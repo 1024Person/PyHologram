@@ -2,15 +2,12 @@
 import sys
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QGridLayout, QDoubleSpinBox, \
-    QMainWindow
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QGridLayout, QDoubleSpinBox
 from PyQt5.QtWidgets import QGroupBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog
 from clac_function import *
 from PyQt5.QtWidgets import QProgressBar
-from PyQt5.QtCore import QThread,pyqtSignal
-
 
 
 class UI(QWidget):
@@ -54,7 +51,7 @@ class UI(QWidget):
         self.input_group = QGroupBox('设置细节')
         self.label_show = QLabel('计算进度：')
         self.progress_bar = QProgressBar(self)  # 显示当前的迭代进度
-        self.progress_bar.setMaximum(self.iter_num-1)
+        self.progress_bar.setMaximum(self.iter_num - 1)
         self.progress_bar.setMinimum(0)
         self.progress_bar.setToolTip("计算进度：")
         self.progress_bar.setMaximumWidth(self.label_show.width())
@@ -67,14 +64,12 @@ class UI(QWidget):
         self.distance_spinbox = QDoubleSpinBox(self)
         self.distance_spinbox.value = 0
         self.theta_spinbox.value = 0
-        # self.distance_spinbox.setSuffix('m')
-        # self.theta_spinbox.setSuffix('')
 
         self.theta_spinbox.setSingleStep(0.1)
         self.theta_spinbox.setDecimals(1)
         self.distance_spinbox.setSingleStep(0.1)
         self.distance_spinbox.setDecimals(1)
-        
+
         # 衍射角和衍射距离的布局
 
         input_gridlayout = QGridLayout()
@@ -82,9 +77,9 @@ class UI(QWidget):
         input_gridlayout.addWidget(self.theta_spinbox, 0, 1)
         input_gridlayout.addWidget(self.distance_label, 1, 0)
         input_gridlayout.addWidget(self.distance_spinbox, 1, 1)
-        input_gridlayout.addWidget(self.save_btn,1,3)
-        input_gridlayout.addWidget(self.progress_bar,0,3)
-        input_gridlayout.addWidget(self.label_show,0,2)
+        input_gridlayout.addWidget(self.save_btn, 1, 3)
+        input_gridlayout.addWidget(self.progress_bar, 0, 3)
+        input_gridlayout.addWidget(self.label_show, 0, 2)
         input_gridlayout.setSpacing(5)
         self.input_group.setLayout(input_gridlayout)  # 为这个空间组添加布局
         # -------------------------------------
@@ -92,7 +87,7 @@ class UI(QWidget):
         self.total_layout = QGridLayout()
         # self.total_layout.addWidget(self.save_btn, 2, 1)
         # self.total_layout.addWidget(self.progress_bar,1,1)
-        self.total_layout.addWidget(self.input_group, 1,0)
+        self.total_layout.addWidget(self.input_group, 1, 0)
         self.total_layout.addWidget(self.totalGroup, 0, 0, 1, 2)
         self.setLayout(self.total_layout)
         # centeralWidget.setLayout(total_layout)
@@ -107,42 +102,46 @@ class UI(QWidget):
         # 保存图片的绑定
         # 计算全息图的绑定
         self.clac_xiang_btn.clicked.connect(self.clacHologram)
+
+        self.save_btn.clicked.connect(self.saveHologram)
+
     # 更新ProgressBar和按钮
-    def updateProBar(self,r):
-        self.progress_bar.setValue(r)
-        if r == self.iter_num - 1:
+    def updateProBar(self, r):
+        if r != -1:
+            self.progress_bar.setValue(r)
+        else:
             self.load_subject_btn.setEnabled(True)
             self.clac_xiang_btn.setEnabled(True)
+            self.save_btn.setEnabled(True)
             self.clac_xiang_btn.setText('计算全息图')
-            # self.calc_thread.tuple(1)
-            hologram,imgabs = Image.fromarray(self.calc_thread.tuple(0)),\
-                Image.fromarray(self.calc_thread.tuple(1))
-            hologram.show()
-            imgabs.show()
-
+            hologram, imgabs = Image.fromarray(np.ceil((self.calc_thread.tuple[0] + np.pi) / (np.pi * 2))), \
+                               Image.fromarray(self.calc_thread.tuple[1] * 255)
+            hologram = hologram.convert('L')
+            imgabs = imgabs.convert('L')
+            hologram.save('hologram.jpg')
+            imgabs.save('imgabs.jpg')
 
     def close(self):
         self.calc_thread.quit()
         sys.exit(0)
-
 
     def clacHologram(self):
         # 计算全息图
         if self.currentfname:
             self.progress_bar.setValue(0)
             self.clac_xiang_btn.setText('计算中...')
+            self.save_btn.setEnabled(False)
             self.clac_xiang_btn.setEnabled(False)  # 设置成不可以点击的
             self.load_subject_btn.setEnabled(False)
-            # self.totalGroup.
             # 创建一个线程,这里要加上self，这是一个坑，如果不加上self,出了这个函数，这个线程就会被销毁
-            self.calc_thread = CalcHologram(self.currentfname,self.iter_num)
-            self.calc_thread._sum.connect(self.updateProBar)    # 将线程发送过来的信号直接挂载到槽函数上去
+            self.calc_thread = CalcHologram(self.currentfname, self.iter_num)
+            self.calc_thread._sum.connect(self.updateProBar)  # 将线程发送过来的信号直接挂载到槽函数上去
             self.calc_thread.start()
         # calcHologram(self.current_fname)
 
     def saveHologram(self):
         # 保存全息图
-        pass
+        QFileDialog().getSaveFileName(directory='/home', filter='png格式(*.png);;jpg格式(*.jpg);;bmp格式(*.bmp)')
 
     def loadSubject(self):
         # 调用这个方法，返回的是文件路径和文件类型
