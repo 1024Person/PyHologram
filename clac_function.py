@@ -15,7 +15,8 @@ class CalcHologram(QThread):
         for i in calcHologram_f(self.fname,self.iter_num):
             if isinstance(i,tuple):
                 # return i
-                self.tuple = tuple
+                self.tuple = i
+                self._sum.emit(-1)
             else:
                 self._sum.emit(i)
 
@@ -76,17 +77,17 @@ def calcHologram_f(fname,iter_num):
 
             # 再次进行傅里叶正变换得到image2
             image2 = np.fft.ifft2(np.fft.ifftshift(image3))
-        print("迭代结束")
-        imgangle = np.angle(image2)
-        image4 = np.exp(imgangle)
+    print("迭代结束")
+    imgangle = np.angle(image2)
+    image4 = np.exp(imgangle)
 
-        # 在将image4做一次变换得到空域上的图片
-        image4 = np.exp(1j * imgangle)
-        # print('abs(image4)',np.abs(image4))
-        imgabs = np.abs(image4)/np.max(np.abs(image4))
+    # 在将image4做一次变换得到空域上的图片
+    image4 = np.exp(1j * imgangle)
+    # print('abs(image4)',np.abs(image4))
+    imgabs = np.abs(image4)/np.max(np.abs(image4))
 
-        imgangle = (imgangle + np.pi) / (2*np.pi)
-        return (imgangle,imgabs) 
+    imgangle = (imgangle + np.pi) / (2*np.pi)
+    yield (imgangle,imgabs) 
 
 
 
