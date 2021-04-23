@@ -15,7 +15,11 @@ class CalcHologram(QThread):
         for i in calcHologram_f(self.fname,self.iter_num):
             if isinstance(i,tuple):
                 # return i
+<<<<<<< HEAD
                 self.tuple = tuple
+=======
+                self.tuple = i
+>>>>>>> 8594c5e075f4d929903742884a1742418a8cd127
                 self._sum.emit(-1)
             else:
                 self._sum.emit(i)
