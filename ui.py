@@ -92,7 +92,7 @@ class UI(QWidget):
         self.setLayout(self.total_layout)
         # centeralWidget.setLayout(total_layout)
         # self.setCentralWidget(centeralWidget)
-        self.setWindowIcon(QIcon('./res/python.png'))
+        self.setWindowIcon(QIcon('./res/icon.png'))
         self.setWindowTitle('GS算法计算光学全息图')
         self.setGeometry(300, 300, 800, 700)
 
@@ -114,7 +114,7 @@ class UI(QWidget):
             self.clac_xiang_btn.setEnabled(True)
             self.save_btn.setEnabled(True)
             self.clac_xiang_btn.setText('计算全息图')
-            hologram, imgabs = Image.fromarray(np.ceil((self.calc_thread.tuple[0] + np.pi) / (np.pi * 2))), \
+            hologram, imgabs = Image.fromarray(((self.calc_thread.tuple[0] + np.pi) / (np.pi * 2))), \
                                Image.fromarray(self.calc_thread.tuple[1] * 255)
             hologram = hologram.convert('L')
             imgabs = imgabs.convert('L')
