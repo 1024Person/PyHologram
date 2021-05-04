@@ -15,16 +15,13 @@ class CalcHologram(QThread):
         for i in calcHologram_f(self.fname,self.iter_num):
             if isinstance(i,tuple):
                 # return i
-<<<<<<< HEAD
-                self.tuple = tuple
-=======
                 self.tuple = i
->>>>>>> 8594c5e075f4d929903742884a1742418a8cd127
                 self._sum.emit(-1)
             else:
                 self._sum.emit(i)
 
 
+"""
 # 计算相位图,使用PIL模块和np模块配合使用
 def calcHologram_f(fname,iter_num):
     # np.seterr(invalid='ignore')
@@ -86,8 +83,6 @@ def calcHologram_f(fname,iter_num):
     imgabs = np.abs(image4)/np.max(np.abs(image4))
 
     imgangle = (imgangle + np.pi) / (2*np.pi)
-    yield (imgangle,imgabs) 
+    yield (imgangle,imgabs)
 
-
-
-
+"""

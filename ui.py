@@ -106,7 +106,6 @@ class UI(QWidget):
         self.save_btn.clicked.connect(self.saveHologram)
 
     # 更新ProgressBar和按钮
-<<<<<<< HEAD
     def updateProBar(self, r):
         if r != -1:
             self.progress_bar.setValue(r)
@@ -121,22 +120,6 @@ class UI(QWidget):
             imgabs = imgabs.convert('L')
             hologram.save('hologram.jpg')
             imgabs.save('imgabs.jpg')
-=======
-    def updateProBar(self,r):
-        self.progress_bar.setValue(r)
-        if r==-1:
-            self.load_subject_btn.setEnabled(True)
-            self.clac_xiang_btn.setEnabled(True)
-            self.save_btn.setEnabled(True)
-            self.distance_spinbox.setEnabled(True)
-            self.theta_spinbox.setEnabled(True)
-            self.clac_xiang_btn.setText('计算全息图')
-            hologram,imgabs = Image.fromarray(self.calc_thread.tuple[0]),\
-                Image.fromarray(self.calc_thread.tuple[1])
-            hologram.show()
-            imgabs.show()
-
->>>>>>> 8594c5e075f4d929903742884a1742418a8cd127
 
     def close(self):
         self.calc_thread.quit()
@@ -150,13 +133,6 @@ class UI(QWidget):
             self.save_btn.setEnabled(False)
             self.clac_xiang_btn.setEnabled(False)  # 设置成不可以点击的
             self.load_subject_btn.setEnabled(False)
-<<<<<<< HEAD
-=======
-            self.save_btn.setEnabled(False)
-            self.theta_spinbox.setEnabled(False)
-            self.distance_spinbox.setEnabled(False)
-            # self.totalGroup.
->>>>>>> 8594c5e075f4d929903742884a1742418a8cd127
             # 创建一个线程,这里要加上self，这是一个坑，如果不加上self,出了这个函数，这个线程就会被销毁
             self.calc_thread = CalcHologram(self.currentfname, self.iter_num)
             self.calc_thread._sum.connect(self.updateProBar)  # 将线程发送过来的信号直接挂载到槽函数上去

@@ -1,0 +1,6 @@
+res/
+*.ui
+unt*.py
+*.bmp
+*.jpg
+__pycache__/
