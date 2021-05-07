@@ -1,6 +1,5 @@
-res/
-*.ui
-unt*.py
 *.bmp
+*.png
 *.jpg
-__pycache__/
+*.csv
+\res
