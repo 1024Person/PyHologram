@@ -22,16 +22,6 @@ class CalcHologram(QThread):
                 self._sum.emit(-1)
             else:
                 self._sum.emit(i)
-# 计算两个向量的线性相关系数
-# def CalcR(a1,a2):
-    # S1 = sum((a1 - a1.sum()/len(a1))**2)/(len(a1)-1)
-    # S2 = sum((a2 - a2.sum()/len(a2))**2)/(len(a2)-1)
-    # S12 = sum(())
-    # Numerator = sum((a1 - a1.sum()/len(a)) * (a2-a2.sum()/len(a)))
-    # Denominator = np.sqrt(\
-        # sum((a1-a1.sum()/len(a1)**2)*\
-        # sum(a2 - a2.sum()/len(a2)**2)\
-            # ))
 # 相位恢复算法,也就是GS算法
 def recoveryHologram(fname):
     # 种下随机种子
