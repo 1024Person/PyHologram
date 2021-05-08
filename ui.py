@@ -114,12 +114,19 @@ class UI(QWidget):
             self.clac_xiang_btn.setEnabled(True)
             self.save_btn.setEnabled(True)
             self.clac_xiang_btn.setText('计算全息图')
-            hologram, imgabs = Image.fromarray(((self.calc_thread.tuple[0] + np.pi) / (np.pi * 2))), \
-                               Image.fromarray(self.calc_thread.tuple[1] * 255)
-            hologram = hologram.convert('L')
-            imgabs = imgabs.convert('L')
-            hologram.save('hologram.jpg')
-            imgabs.save('imgabs.jpg')
+            # hologram, imgabs = Image.fromarray(((self.calc_thread.tuple[0] + np.pi) / (np.pi * 2))), \
+                            #    Image.fromarray(self.calc_thread.tuple[1] * 255)
+            hologram,imgabs = Image.fromarray(np.angle(self.calc_thread.f)),Image.fromarray(np.abs(self.calc_thread.f))            
+            ax1 = plt.subplot(211)
+            ax1.imshow(hologram,cmap=plt.cm.gray)
+            ax2 = plt.subplot(212)
+            ax2.imshow(imgabs,cmap=plt.cm.gray)
+            plt.show()
+            
+            # hologram = hologram.convert('L')
+            # imgabs = imgabs.convert('L')
+            # hologram.save('hologram.jpg')
+            # imgabs.save('imgabs.jpg')
 
     def close(self):
         self.calc_thread.quit()
@@ -134,7 +141,7 @@ class UI(QWidget):
             self.clac_xiang_btn.setEnabled(False)  # 设置成不可以点击的
             self.load_subject_btn.setEnabled(False)
             # 创建一个线程,这里要加上self，这是一个坑，如果不加上self,出了这个函数，这个线程就会被销毁
-            self.calc_thread = CalcHologram(self.currentfname, self.iter_num)
+            self.calc_thread = CalcHologramThead(self.currentfname, self.iter_num)
             self.calc_thread._sum.connect(self.updateProBar)  # 将线程发送过来的信号直接挂载到槽函数上去
             self.calc_thread.start()
         # calcHologram(self.current_fname)
